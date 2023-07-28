@@ -18,3 +18,59 @@
 
 
 以上。
+
+
+
+
+
+## photos脚本
+
+##### 目的
+
+如同上文说的，群辉在photos中如果你直接上传照片到photos的共享空间，系统会自动帮你把照片文件归类，但是如果你是同步了自己手机到个人空间，然后从个人空间中移动到共享空间，那么你指定到哪他就给你移动到哪，实际的文件目录会比较乱。虽然用时间轴模式查看倒是一样，但是我还是期望将其一并整理。
+
+
+
+##### 使用
+
+将下载的项目丢到自己的位置，然后修改config.ini中的photos_dir指定为需要整理的目标文件夹的绝对路径。
+
+```ini
+[common]
+photos_dir = E:\test
+```
+
+
+
+然后在script_manager中,将config.read("")中的config.ini改为config.ini的绝对路径（ps：不知道为啥实测相对路径read就是读取不到，后续在研究罗）
+
+```python
+def main():
+    \# 创建配置解析器对象
+    config = configparser.ConfigParser()
+
+​    \# 读取配置文件 最好改成绝对路径,不然在群辉跑不起来
+​    config.read('config.ini')
+​    \# 照片文件目录格式化
+​    formatPhotosFile(config)
+```
+
+
+
+使用SSH连接群辉使用python命令执行脚本
+
+```python
+python XXXXXXX\script_manager.py  #此处同样为绝对路径
+```
+
+
+
+或者在群辉计划任务中设置上述代码
+
+
+
+##### 注意点
+
+- 几处路径需要使用绝对路径
+- 执行完成后目标处有同名文件，当前文件会留在原位置手动清理下即可（一般不多）
+- 执行完成后群辉会重新索引图片/视频，在photos刚完成的一段时间无法预览为正常现象
