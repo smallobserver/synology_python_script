@@ -32,6 +32,11 @@ class PhotosFormatScript:
 
                 # 判断路径是否为文件
                 if os.path.isfile(file_path):
+                    # 过滤掉缩略图文件(实际使用后发现群辉会生成缩略图文件)
+                    if file.startswith("SYNOLOGY"):
+                        print(f"检测到缩略图文件{file}, 跳过")
+                        continue
+
                     # 获取文件扩展名
                     _, ext = os.path.splitext(file_path)
                     ext = ext.lower()
@@ -42,7 +47,7 @@ class PhotosFormatScript:
                         mtime = os.path.getmtime(file_path)
                         modified_date = datetime.fromtimestamp(mtime)
 
-                        #偶尔会存在修改时间和实际时间不一致,这时候需要比对一下file上的名字
+                        # 偶尔会存在修改时间和实际时间不一致,这时候需要比对一下file上的名字
                         '''仅仅支持标准的名字XXX_20220801_XXX这种'''
                         parts = file_path.split("_")
                         if len(parts) == 3:
@@ -52,7 +57,6 @@ class PhotosFormatScript:
                                 date_obj = datetime.strptime(str(day), "%Y%m%d")
                                 if date_obj < modified_date:
                                     modified_date = date_obj
-
 
                         # 构建目标文件夹路径
                         destination_folder = os.path.join(directory, str(modified_date.year),
